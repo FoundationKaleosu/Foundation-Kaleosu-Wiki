@@ -19,6 +19,7 @@
       background-color: #000;
       color: #fff;
       padding-top: 80px; /* Para que o conteúdo não fique sobre o cabeçalho fixo */
+      overflow-x: hidden; /* Para evitar o problema de rolagem horizontal */
     }
 
     header {
@@ -34,6 +35,7 @@
       top: 0;
       left: 0;
       z-index: 1000;
+      box-sizing: border-box;
     }
 
     .menu-toggle {
@@ -57,6 +59,7 @@
       margin: 0;
       font-weight: bold;
       white-space: nowrap;
+      padding-right: 20px; /* Ajuste para que o título não fique cortado */
     }
 
     nav {
@@ -64,6 +67,8 @@
       gap: 10px;
       flex-wrap: wrap;
       margin-left: auto;
+      flex: 1;
+      justify-content: flex-end;
     }
 
     nav button {
@@ -127,6 +132,7 @@
         flex-direction: column;
         width: 100%;
         margin-top: 10px;
+        text-align: left;
       }
 
       nav.show {
@@ -140,11 +146,14 @@
 
       header h1 {
         font-size: 28px;
+        padding-right: 0; /* Remove o espaçamento extra no título */
       }
 
       nav button {
         width: 100%;
         text-align: left;
+        font-size: 16px; /* Aumenta o tamanho dos botões no mobile */
+        padding: 15px 20px;
       }
 
       .logo-container {
