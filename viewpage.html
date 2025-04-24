@@ -150,10 +150,18 @@
       background-color: #222;
     }
 
+    /* Responsividade para telas pequenas */
     @media (max-width: 768px) {
       header {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      header div {
+        flex-direction: row;
+        justify-content: space-around; /* Isso garante que os botões fiquem na horizontal */
+        width: 100%;
+        margin-top: 10px;
       }
 
       .pagina-detalhes h2 {
@@ -164,13 +172,9 @@
         padding: 1rem;
       }
 
-      header div {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      table, th, td {
+      header div button {
         font-size: 0.9rem;
+        padding: 0.4rem 1rem;
       }
     }
 
@@ -190,6 +194,11 @@
 
       table, th, td {
         font-size: 0.8rem;
+      }
+
+      header div button {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
       }
     }
   </style>
