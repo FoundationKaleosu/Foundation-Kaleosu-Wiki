@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Foundation Kaleosu Wiki</title>
+  <title>Foundation Kaleosu Wiki - Página</title>
 
   <!-- Fonte Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -18,6 +18,7 @@
       font-family: 'Poppins', sans-serif;
       background-color: #000;
       color: #fff;
+      padding-top: 80px; /* Para que o conteúdo não fique sobre o cabeçalho fixo */
     }
 
     header {
@@ -48,6 +49,7 @@
     .logo-container {
       display: flex;
       align-items: center;
+      flex: 1;
     }
 
     header h1 {
@@ -61,6 +63,7 @@
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      margin-left: auto;
     }
 
     nav button {
@@ -80,7 +83,7 @@
     }
 
     main {
-      padding: 120px 20px 20px;
+      padding: 20px;
       max-width: 900px;
       margin: 0 auto;
     }
@@ -157,9 +160,12 @@
 
 <header>
   <div class="logo-container">
+    <!-- Menu hambúrguer -->
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <h1>Foundation Kaleosu Wiki</h1>
   </div>
+  
+  <!-- Navegação -->
   <nav id="navMenu">
     <button onclick="irPara('index.html')">Início</button>
     <button onclick="irPara('categoria.html')">Categorias</button>
