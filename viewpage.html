@@ -9,13 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
       background-color: #000;
       color: #fff;
-      display: flex;
-      flex-direction: column;
     }
 
     header {
@@ -23,183 +25,212 @@
       padding: 20px 15px;
       background-color: #20232a;
       border-bottom: 3px solid #daa520;
-      color: #fff;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      box-sizing: border-box;
+      flex-wrap: wrap;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: 26px;
+      cursor: pointer;
+      color: #daa520;
+      background: none;
+      border: none;
+      margin-right: 10px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
     }
 
     header h1 {
-      font-size: 45px;
-      font-weight: bold;
+      font-size: 36px;
       margin: 0;
-      text-align: center;
+      font-weight: bold;
+      white-space: nowrap;
     }
 
-    .botoes-container {
+    nav {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
-      justify-content: center;
-      margin-top: 10px;
+      flex-wrap: wrap;
     }
 
-    header button {
+    nav button {
       background-color: #8b0000;
       color: #fff;
       border: 3px solid #daa520;
       padding: 10px 15px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       border-radius: 5px;
       font-weight: bold;
       transition: background-color 0.3s;
     }
 
-    header button:hover {
+    nav button:hover {
       background-color: #a22a2a;
     }
 
     main {
-      padding: 30px 20px;
-      background-color: #000;
-      color: #fff;
-      display: flex;
-      justify-content: center;
+      padding: 120px 20px 20px;
+      max-width: 900px;
+      margin: 0 auto;
     }
 
-    #paginaDetalhes {
-      max-width: 900px;
-      width: 100%;
+    .pagina-detalhes {
       background-color: #20232a;
       padding: 30px;
       border-radius: 10px;
       border: 3px solid #daa520;
-      box-sizing: border-box;
+      margin-top: 20px;
     }
 
-    #paginaDetalhes h2 {
-      font-size: 48px;
-      color: #daa520;
+    .pagina-detalhes h2 {
       text-align: center;
-      margin-bottom: 15px;
+      font-size: 44px;
+      color: #daa520;
+      margin-bottom: 20px;
     }
 
-    #paginaDetalhes p {
+    .pagina-detalhes p {
+      text-align: left;
       font-size: 16px;
       color: #ccc;
       line-height: 1.6;
-      text-align: left;
+      margin-bottom: 15px;
     }
 
-    .data-criacao {
+    .pagina-detalhes .data-criacao {
       font-size: 14px;
       color: #999;
-      margin-top: 25px;
       text-align: center;
     }
 
-    /* Remover a sidebar no viewpage */
-    .sidebar {
-      display: none;
-    }
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
 
-    a {
-      color: #daa520;
-    }
+      nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 10px;
+      }
 
-    @media (min-width: 768px) {
+      nav.show {
+        display: flex;
+      }
+
       header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-start;
       }
 
       header h1 {
-        text-align: left;
-        font-size: 38px;
+        font-size: 28px;
       }
 
-      .botoes-container {
-        margin-top: 0;
+      nav button {
+        width: 100%;
+        text-align: left;
+      }
+
+      .logo-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
     }
   </style>
 </head>
 <body class="viewpage">
 
-  <header>
+<header>
+  <div class="logo-container">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <h1>Foundation Kaleosu Wiki</h1>
-    <div class="botoes-container">
-      <button onclick="irPara('index.html')">Início</button>
-      <button onclick="irPara('categoria.html')">Categorias</button>
-      <button onclick="irPara('sobre.html')">Sobre</button>
-      <button onclick="irPara('contato.html')">Contato</button>
-      <button onclick="abrirAreaRestrita()">Área Restrita</button>
-    </div>
-  </header>
+  </div>
+  <nav id="navMenu">
+    <button onclick="irPara('index.html')">Início</button>
+    <button onclick="irPara('categoria.html')">Categorias</button>
+    <button onclick="irPara('sobre.html')">Sobre</button>
+    <button onclick="irPara('contato.html')">Contato</button>
+    <button onclick="abrirAreaRestrita()">Área Restrita</button>
+  </nav>
+</header>
 
-  <main>
-    <div id="paginaDetalhes">
-      <!-- Conteúdo carregado do Firebase -->
-    </div>
-  </main>
+<main>
+  <div class="pagina-detalhes" id="paginaDetalhes">
+    <!-- Conteúdo será carregado dinamicamente -->
+  </div>
+</main>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB2YB3DCEJ0TvoDsbLQw83yzqhSRG7i9GM",
-      authDomain: "foundation-kaleosu-wiki.firebaseapp.com",
-      databaseURL: "https://foundation-kaleosu-wiki-default-rtdb.firebaseio.com",
-      projectId: "foundation-kaleosu-wiki",
-      storageBucket: "foundation-kaleosu-wiki.appspot.com",
-      messagingSenderId: "1026513810215",
-      appId: "1:1026513810215:web:574eb84b7cc14c80c7af02"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyB2YB3DCEJ0TvoDsbLQw83yzqhSRG7i9GM",
+    authDomain: "foundation-kaleosu-wiki.firebaseapp.com",
+    databaseURL: "https://foundation-kaleosu-wiki-default-rtdb.firebaseio.com",
+    projectId: "foundation-kaleosu-wiki",
+    storageBucket: "foundation-kaleosu-wiki.appspot.com",
+    messagingSenderId: "1026513810215",
+    appId: "1:1026513810215:web:574eb84b7cc14c80c7af02"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const paginaDetalhes = document.getElementById("paginaDetalhes");
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const paginaDetalhes = document.getElementById("paginaDetalhes");
 
-    function carregarPagina() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const paginaId = urlParams.get("id");
+  function carregarPagina() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paginaId = urlParams.get("id");
 
-      if (paginaId) {
-        onValue(ref(db, "paginas/" + paginaId), (snapshot) => {
-          const pagina = snapshot.val();
-          if (pagina) {
-            const dataCriacao = new Date(pagina.dataCriacao).toLocaleString();
-            paginaDetalhes.innerHTML = `
-              <h2>${pagina.titulo}</h2>
-              <p>${pagina.conteudo}</p>
-              <p class="data-criacao">Criado em: ${dataCriacao}</p>
-              <p class="data-criacao">Por: ${pagina.criador || 'Desconhecido'}</p>
-              <p class="data-criacao">Categoria: ${pagina.categoria || 'Sem categoria'} / ${pagina.subcategoria || ''}</p>
-            `;
-          }
-        });
-      }
+    if (paginaId) {
+      onValue(ref(db, "paginas/" + paginaId), (snapshot) => {
+        const pagina = snapshot.val();
+        if (pagina) {
+          const dataCriacao = new Date(pagina.dataCriacao).toLocaleString();
+          paginaDetalhes.innerHTML = `
+            <h2>${pagina.titulo}</h2>
+            <p>${pagina.conteudo}</p>
+            <p class="data-criacao">Criado em: ${dataCriacao}</p>
+          `;
+        }
+      });
     }
+  }
 
-    window.irPara = (url) => {
-      window.location.href = url;
-    };
+  function toggleMenu() {
+    document.getElementById("navMenu").classList.toggle("show");
+  }
 
-    window.abrirAreaRestrita = () => {
-      const senha = prompt("Digite a senha de acesso à Área Restrita:");
-      if (senha === "2025") {
-        window.location.href = "admin.html";
-      } else {
-        alert("Senha incorreta.");
-      }
-    };
+  window.abrirAreaRestrita = () => {
+    const senha = prompt("Digite a senha de acesso à Área Restrita:");
+    if (senha === "2025") {
+      window.location.href = "admin.html";
+    } else {
+      alert("Senha incorreta.");
+    }
+  };
 
-    carregarPagina();
-  </script>
+  window.irPara = (url) => {
+    window.location.href = url;
+  };
+
+  carregarPagina();
+</script>
 
 </body>
 </html>
