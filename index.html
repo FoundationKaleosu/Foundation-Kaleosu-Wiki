@@ -79,7 +79,8 @@
 
     #pesquisa {
       margin-bottom: 20px;
-      width: 96%;
+      width: 100%;
+      max-width: 500px;
       padding: 10px;
       font-size: 16px;
       border: 2px solid #daa520;
@@ -109,6 +110,11 @@
       color: #fff;
       cursor: pointer;
       box-sizing: border-box;
+      transition: transform 0.3s ease;
+    }
+
+    .pagina-item:hover {
+      transform: scale(1.05);
     }
 
     .pagina-item h3 {
@@ -152,108 +158,106 @@
     }
 
     /* Responsividade para telas pequenas (max-width: 768px) */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: center;
-        padding: 20px 15px;
-      }
-
-      header h1 {
-        font-size: 24px;
-        text-align: center;
-      }
-
-      header div {
-        flex-direction: row;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 10px;
-        width: 100%;
-      }
-
-      header button {
-        font-size: 1rem;
-        padding: 0.5rem 1.2rem;
-        min-width: auto;
-      }
-
-      /* Centralizar a barra de pesquisa */
-      #pesquisa {
-        width: 80%; /* Ajusta a largura para 80% */
-        margin: 20px auto; /* Centraliza com margem automática */
-      }
-
-      #listaPaginas {
-        flex-direction: column;
-        display: flex;
-        justify-content: center; /* Garante que as cards fiquem centralizadas */
-        gap: 20px;
-        width: 100%; /* Ocupa a largura total disponível */
-      }
-
-      .pagina-item {
-        width: 90%; /* Ajusta as cards para 90% da largura */
-        max-width: 350px; /* Limita a largura máxima das cards */
-        text-align: center;
-        margin: 0 auto; /* Garante que as cards fiquem centralizadas */
-      }
-
-      .sidebar {
-        display: none; /* Esconder a sidebar no mobile */
-      }
-
-      .pagina-item h3 {
-        font-size: 16px;
-      }
-
-      .pagina-item .data-criacao {
-        font-size: 11px;
-      }
-
-      main {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 50px 20px;
-        width: 100%; /* Para ocupar toda a largura */
-        box-sizing: border-box;
-      }
+  @media (max-width: 768px) {
+    header {
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 10px;
     }
 
-    /* Responsividade para telas muito pequenas (max-width: 480px) */
-    @media (max-width: 480px) {
-      header h1 {
-        font-size: 20px;
-      }
-
-      header button {
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
-      }
-
-      #pesquisa {
-        font-size: 14px;
-      }
-
-      .pagina-item h3 {
-        font-size: 14px;
-      }
-
-      .pagina-item .data-criacao {
-        font-size: 10px;
-      }
-
-      .sidebar {
-        display: none; /* Confirmar que a sidebar não aparece em dispositivos móveis */
-      }
-
-      .pagina-item {
-        padding: 10px;
-      }
+    header h1 {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 10px;
     }
-  </style>
+
+    header div {
+      flex-direction: column; /* Os botões irão se alinhar em coluna */
+      gap: 10px;
+      margin-top: 10px;
+      width: 100%; /* Garante que os botões ocupem 100% da largura */
+      justify-content: center;
+    }
+
+    header button {
+      font-size: 1rem;
+      padding: 0.5rem 1.2rem;
+      min-width: auto;
+      width: 100%; /* Botões ocuparão toda a largura disponível no mobile */
+    }
+
+    /* Centralizar a barra de pesquisa */
+    #pesquisa {
+      width: 90%;
+      margin: 20px auto;
+    }
+
+    #listaPaginas {
+      flex-direction: column;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    .pagina-item {
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    .pagina-item h3 {
+      font-size: 16px;
+    }
+
+    .pagina-item .data-criacao {
+      font-size: 11px;
+    }
+
+    .sidebar {
+      display: none; /* Confirmar que a sidebar não aparece em dispositivos móveis */
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 320px 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+
+  /* Responsividade para telas muito pequenas (max-width: 480px) */
+  @media (max-width: 480px) {
+    header h1 {
+      font-size: 20px;
+    }
+
+    header button {
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+
+    #pesquisa {
+      font-size: 14px;
+    }
+
+    .pagina-item h3 {
+      font-size: 14px;
+    }
+
+    .pagina-item .data-criacao {
+      font-size: 10px;
+    }
+
+    .pagina-item {
+      padding: 10px;
+    }
+  }
+</style>
 </head>
 <body>
 
@@ -264,7 +268,7 @@
     <button onclick="irPara('categoria.html')">Categorias</button>
     <button onclick="irPara('sobre.html')">Sobre</button>
     <button onclick="irPara('contato.html')">Contato</button>
-    <button onclick="abrirAreaRestrita()">Área Restrita</button>
+    <button onclick="abrirAreaRestrita('admin.html')">Área Restrita</button>
   </div>
 </header>
 
