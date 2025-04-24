@@ -35,7 +35,7 @@
       top: 0;
       left: 0;
       z-index: 1000;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
 
     header h1 {
@@ -49,7 +49,7 @@
     header div {
       display: flex;
       gap: 10px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       justify-content: flex-end;
     }
 
@@ -100,6 +100,16 @@
       margin-top: 0.5rem;
     }
 
+    .pagina-detalhes img {
+      display: block;
+      margin: 20px auto;
+      max-width: 100%;
+      height: auto;
+      border: 3px solid #daa520;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
     .data-criacao {
       font-size: 0.9rem;
       color: #999;
@@ -108,11 +118,36 @@
     }
 
     .sidebar {
-      display: none; /* Oculta no viewpage */
+      display: none;
     }
 
     a {
       color: #daa520;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #000; /* Borda preta */
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      color: #fff;
+    }
+
+    th {
+      background-color: #333;
+      font-weight: bold;
+    }
+
+    td {
+      background-color: #222;
     }
 
     @media (max-width: 768px) {
@@ -128,6 +163,15 @@
       .pagina-detalhes {
         padding: 1rem;
       }
+
+      header div {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      table, th, td {
+        font-size: 0.9rem;
+      }
     }
 
     @media (max-width: 480px) {
@@ -142,6 +186,10 @@
 
       .pagina-detalhes h2 {
         font-size: 1.8rem;
+      }
+
+      table, th, td {
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -162,6 +210,39 @@
 <main>
   <div id="paginaDetalhes" class="pagina-detalhes">
     <!-- Detalhes da página serão carregados aqui -->
+    <h2>Título da Página</h2>
+    <p>Conteúdo da página...</p>
+    
+    <!-- Tabela exemplo -->
+    <table>
+      <thead>
+        <tr>
+          <th>Coluna 1</th>
+          <th>Coluna 2</th>
+          <th>Coluna 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dado 1</td>
+          <td>Dado 2</td>
+          <td>Dado 3</td>
+        </tr>
+        <tr>
+          <td>Dado 4</td>
+          <td>Dado 5</td>
+          <td>Dado 6</td>
+        </tr>
+        <tr>
+          <td>Dado 7</td>
+          <td>Dado 8</td>
+          <td>Dado 9</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <img src="https://via.placeholder.com/600x300" alt="Imagem Exemplo" />
+    <p class="data-criacao">Criado em: 2025-04-23</p>
   </div>
 </main>
 
@@ -195,7 +276,25 @@
           paginaDetalhes.innerHTML = `
             <h2>${pagina.titulo}</h2>
             <p id="conteudoPagina">${pagina.conteudo}</p>
+            <img src="${pagina.imagemUrl}" alt="Imagem da Página" />
             <p class="data-criacao">Criado em: ${dataCriacao}</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Coluna 1</th>
+                  <th>Coluna 2</th>
+                  <th>Coluna 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${pagina.dado1}</td>
+                  <td>${pagina.dado2}</td>
+                  <td>${pagina.dado3}</td>
+                </tr>
+                <!-- Adicione outras linhas conforme necessário -->
+              </tbody>
+            </table>
           `;
         }
       });
