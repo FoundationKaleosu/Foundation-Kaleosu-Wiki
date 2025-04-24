@@ -282,28 +282,38 @@
         const pagina = snapshot.val();
         if (pagina) {
           const dataCriacao = new Date(pagina.dataCriacao).toLocaleString();
+          
+          let tabelaHTML = ""; // Variável para armazenar a tabela, se necessário
+
+          // Verificar se há dados para a tabela antes de exibi-la
+          if (pagina.dado1 && pagina.dado2 && pagina.dado3) {
+            tabelaHTML = `
+              <table>
+                <thead>
+                  <tr>
+                    <th>Coluna 1</th>
+                    <th>Coluna 2</th>
+                    <th>Coluna 3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>${pagina.dado1}</td>
+                    <td>${pagina.dado2}</td>
+                    <td>${pagina.dado3}</td>
+                  </tr>
+                </tbody>
+              </table>
+            `;
+          }
+
+          // Atualizando o conteúdo da página com ou sem a tabela
           paginaDetalhes.innerHTML = `
             <h2>${pagina.titulo}</h2>
             <p id="conteudoPagina">${pagina.conteudo}</p>
             <img src="${pagina.imagemUrl}" alt="Imagem da Página" />
             <p class="data-criacao">Criado em: ${dataCriacao}</p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Coluna 1</th>
-                  <th>Coluna 2</th>
-                  <th>Coluna 3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>${pagina.dado1}</td>
-                  <td>${pagina.dado2}</td>
-                  <td>${pagina.dado3}</td>
-                </tr>
-                <!-- Adicione outras linhas conforme necessário -->
-              </tbody>
-            </table>
+            ${tabelaHTML} <!-- A tabela só será inserida se houver dados -->
           `;
         }
       });
