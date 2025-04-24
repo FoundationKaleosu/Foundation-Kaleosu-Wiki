@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Foundation Kaleosu Wiki - Página</title>
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts (Poppins) -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
@@ -16,11 +16,10 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background-color: #000;
-      color: #fff;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      background-color: #000;
+      color: #fff;
     }
 
     header {
@@ -40,7 +39,7 @@
 
     header h1 {
       margin: 0;
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: bold;
       flex: 1;
       min-width: 200px;
@@ -71,77 +70,84 @@
 
     main {
       flex: 1;
-      padding: 6rem 1rem 2rem;
+      padding: 120px 20px 40px 20px;
+      background: #000;
       display: flex;
       justify-content: center;
     }
 
-    .pagina-detalhes {
+    #paginaDetalhes {
       background-color: #20232a;
-      padding: 1.5rem;
+      padding: 30px 25px;
       border-radius: 10px;
       border: 3px solid #daa520;
       width: 100%;
-      max-width: 900px;
+      max-width: 800px;
     }
 
-    .pagina-detalhes h2 {
-      font-size: 3rem;
-      color: #daa520;
+    #paginaDetalhes h2 {
       text-align: center;
-      margin: 0 0 0.8rem;
+      font-size: 45px;
+      color: #daa520;
+      margin-bottom: 20px;
     }
 
-    .pagina-detalhes p {
-      font-size: 1rem;
+    #paginaDetalhes p {
+      font-size: 16px;
       color: #ccc;
       line-height: 1.6;
       text-align: left;
-      margin-top: 0.5rem;
+      margin-bottom: 10px;
     }
 
-    .data-criacao {
-      font-size: 0.9rem;
+    #paginaDetalhes .data-criacao {
+      font-size: 14px;
       color: #999;
-      margin-top: 1.5rem;
       text-align: center;
+      margin-top: 25px;
     }
 
     .sidebar {
-      display: none; /* Oculta no viewpage */
+      display: none;
     }
 
     a {
       color: #daa520;
     }
 
+    /* Responsivo para mobile */
     @media (max-width: 768px) {
       header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        gap: 1rem;
       }
 
-      .pagina-detalhes h2 {
-        font-size: 2.2rem;
-      }
-
-      .pagina-detalhes {
-        padding: 1rem;
-      }
-    }
-
-    @media (max-width: 480px) {
       header h1 {
-        font-size: 1.5rem;
+        text-align: center;
+        font-size: 2.4rem;
+      }
+
+      header div {
+        justify-content: center;
       }
 
       header button {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+        min-width: 120px;
       }
 
-      .pagina-detalhes h2 {
-        font-size: 1.8rem;
+      main {
+        padding: 110px 15px 30px 15px;
+      }
+
+      #paginaDetalhes {
+        padding: 25px 20px;
+      }
+
+      #paginaDetalhes h2 {
+        font-size: 42px;
       }
     }
   </style>
@@ -160,8 +166,8 @@
 </header>
 
 <main>
-  <div id="paginaDetalhes" class="pagina-detalhes">
-    <!-- Detalhes da página serão carregados aqui -->
+  <div id="paginaDetalhes">
+    <!-- Detalhes da página serão carregados dinamicamente -->
   </div>
 </main>
 
@@ -181,6 +187,7 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+
   const paginaDetalhes = document.getElementById("paginaDetalhes");
 
   function carregarPagina() {
@@ -195,7 +202,8 @@
           paginaDetalhes.innerHTML = `
             <h2>${pagina.titulo}</h2>
             <p id="conteudoPagina">${pagina.conteudo}</p>
-            <p class="data-criacao">Criado em: ${dataCriacao}</p>
+            <p class="data-criacao">Criado por: ${pagina.autor || 'Desconhecido'} | ${dataCriacao}<br>
+            Categoria: ${pagina.categoria || 'Sem categoria'} › ${pagina.subcategoria || ''}</p>
           `;
         }
       });
