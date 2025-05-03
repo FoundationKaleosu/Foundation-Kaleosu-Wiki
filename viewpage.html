@@ -24,8 +24,8 @@
       text-align: center;
     }
     header h1 {
-      color: #FFD700;
-      font-size: 2.5em;
+      color: #ffffff;
+      font-size: 3em;
       margin-bottom: 10px;
     }
     .navbar {
@@ -45,7 +45,7 @@
       transition: 0.3s;
     }
     .navbar a:hover {
-      background-color: #8b0000;
+      background-color: #730000;
       color: #000000;
     }
     main {
@@ -60,48 +60,50 @@
       padding: 30px;
     }
     .content-title {
-      font-size: 2em;
-      color: #FFD700;
+      font-size: 3em;
+      color: #ffffff;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       position: relative;
     }
     .content-title::after {
       content: '';
       position: absolute;
-      bottom: -10px;
-      left: 0;
-      width: 100%;
-      height: 2px;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 3px;
       background-color: #FFD700;
     }
-    .content-meta {
-      text-align: center;
-      margin-bottom: 8px;
-      font-size: 1em;
-      color: #aaa;
-    }
-    .content-meta a {
-      color: #FFD700;
-      text-decoration: none;
-    }
-    .content-meta a:hover {
-      text-decoration: underline;
+    .divider {
+      height: 3px;
+      background-color: #FFD700;
+      margin: 30px 0;
     }
     .content-body {
       font-size: 1.1em;
       line-height: 1.6;
       white-space: pre-wrap;
-      margin-bottom: 20px;
     }
-    .content-footer {
-      font-size: 0.9em;
-      color: #ccc;
-      text-align: right;
+    .info-footer {
+      font-size: 0.95em;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .info-footer a {
+      color: #FFD700;
+      text-decoration: none;
+    }
+    .info-footer a:hover {
+      text-decoration: underline;
     }
     @media (max-width: 600px) {
-      header h1 { font-size: 1.8em; }
-      .content-title { font-size: 1.5em; }
+      header h1 { font-size: 2em; }
+      .content-title { font-size: 2em; }
       .content-body { font-size: 1em; }
     }
   </style>
@@ -121,10 +123,13 @@
   <main>
     <div class="content-card">
       <h2 class="content-title" id="page-title">Carregando título...</h2>
-      <div class="content-meta" id="page-meta">Carregando categoria...</div>
-      <div class="content-meta" id="page-submeta">Carregando subcategoria...</div>
+      <div class="divider"></div>
       <div class="content-body" id="page-content">Carregando conteúdo da página...</div>
-      <div class="content-footer" id="page-footer"></div>
+      <div class="divider"></div>
+      <div class="info-footer">
+        <div id="author-date">Autor: ... / Criado em: ...</div>
+        <div id="category-info">Categoria: ... / Subcategoria: ...</div>
+      </div>
     </div>
   </main>
 
@@ -149,14 +154,12 @@
     const pageId = urlParams.get("id");
 
     const titleEl = document.getElementById("page-title");
-    const metaEl = document.getElementById("page-meta");
-    const submetaEl = document.getElementById("page-submeta");
     const contentEl = document.getElementById("page-content");
-    const footerEl = document.getElementById("page-footer");
+    const authorDateEl = document.getElementById("author-date");
+    const categoryInfoEl = document.getElementById("category-info");
 
     if (!pageId) {
       titleEl.innerText = "Página não encontrada";
-      metaEl.innerText = "";
       contentEl.innerText = "Nenhum ID foi fornecido na URL.";
     } else {
       const pageRef = ref(db, 'pages/' + pageId);
@@ -167,39 +170,42 @@
           contentEl.innerHTML = pageData.content || "Sem conteúdo.";
 
           const author = pageData.author || "Desconhecido";
-
-          // Tratar a data de criação
           let createdAt = pageData.creationDate || "Data não disponível";
+
           if (createdAt !== "Data não disponível") {
-            // Converter a data para um formato legível
             const [day, month, year] = createdAt.split('/');
             createdAt = `${day} de ${getMonthName(month)} de ${year}`;
           }
-          
-          footerEl.innerText = `Autor: ${author} | Criado em: ${createdAt}`;
+
+          authorDateEl.innerText = `Autor: ${author} / Criado em: ${createdAt}`;
 
           if (pageData.categoryId) {
             const categorySnap = await get(ref(db, 'categories/' + pageData.categoryId));
             if (categorySnap.exists()) {
               const category = categorySnap.val();
-              metaEl.innerHTML = `Categoria: <a href="categoria-detalhes.html?id=${pageData.categoryId}">${category.name}</a>`;
+              let categoryName = category.name || "N/A";
+              let subcategoryName = "N/A";
 
-              if (category.subcategories) {
-                const subcategoryId = pageData.subcategoryId;
-                if (subcategoryId && category.subcategories[subcategoryId]) {
-                  const subcategory = category.subcategories[subcategoryId];
-                  submetaEl.innerHTML = `Subcategoria: <a href="subcategoria.html?id=${subcategoryId}">${subcategory.name}</a>`;
-                } else {
-                  submetaEl.innerHTML = "Subcategoria: N/A";
+              const categoryLink = `categoria-detalhes.html?id=${pageData.categoryId}`;
+              let subcategoryLink = "#";
+
+              if (category.subcategories && pageData.subcategoryId) {
+                const sub = category.subcategories[pageData.subcategoryId];
+                if (sub) {
+                  subcategoryName = sub.name;
+                  subcategoryLink = `subcategoria.html?id=${pageData.subcategoryId}`;
                 }
-              } else {
-                submetaEl.innerHTML = "Subcategoria: N/A";
               }
+
+              categoryInfoEl.innerHTML = `
+                Categoria: <a href="${categoryLink}">${categoryName}</a> /
+                Subcategoria: <a href="${subcategoryLink}">${subcategoryName}</a>
+              `;
             } else {
-              metaEl.innerHTML = "Categoria: N/A";
+              categoryInfoEl.innerText = "Categoria: N/A / Subcategoria: N/A";
             }
           } else {
-            metaEl.innerHTML = "Categoria: N/A";
+            categoryInfoEl.innerText = "Categoria: N/A / Subcategoria: N/A";
           }
         } else {
           titleEl.innerText = "Página não encontrada";
@@ -212,10 +218,9 @@
       });
     }
 
-    // Função para obter o nome do mês em português
     function getMonthName(month) {
       const months = [
-        "janeiro", "fevereiro", "março", "abril", "maio", "junho", 
+        "janeiro", "fevereiro", "março", "abril", "maio", "junho",
         "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
       ];
       return months[parseInt(month, 10) - 1] || "mês inválido";
