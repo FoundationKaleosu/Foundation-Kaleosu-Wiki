@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Foundation Kaleosu Wiki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #000000;
+      color: #dfdfe8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      background-color: #181829;
+      padding: 20px 10px;
+      border-bottom: 3px solid #FFD700;
+      text-align: center;
+    }
+
+    header h1 {
+      color: #FFD700;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .navbar a {
+      color: #dfdfe8;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #dfdfe8;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 2.2em;
+       border-bottom: 2px solid #FFD700;
+    }
+
+    .container {
+      background-color: #232333;
+      border: 2px solid #FFD700;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .category-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .category-form input {
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 2px solid #FFD700;
+      background-color: #555;
+      color: #dfdfe8;
+    }
+
+    .category-form input:focus {
+      outline: none;
+      border-color: #FFD700;
+    }
+
+    .category-form button {
+      padding: 10px;
+      font-size: 1em;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      color: #dfdfe8;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .category-form button:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+
+    #category-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .letter-container {
+      width: 100%;
+      background-color: #232333;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .letter-container h3 {
+      color: #DAA520;
+      margin-bottom: 10px;
+      font-size: 1.5em;
+    }
+
+    .category-item {
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      border-radius: 5px;
+      padding: 8px;
+      margin-bottom: 5px;
+    }
+
+    .category-item a {
+      text-decoration: none;
+      color: #dfdfe8;
+      display: block;
+    }
+
+    .category-item:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+
+    @media(max-width: 768px) {
+      .container,
+      #category-container {
+        width: 95%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Foundation Kaleosu Wiki</h1>
+    <div class="navbar">
+      <a href="index.html">Início</a>
+      <a href="categoria.html">Categorias</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="contato.html">Contato</a>
+      <a href="admin.html">Área Restrita</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <h2>Gerenciamento de Categorias</h2>
+      <div class="category-form">
+        <input type="text" id="category-name" placeholder="Nome da categoria" />
+        <input type="password" id="master-password" placeholder="Insira Chave Mestra" />
+        <button id="add-category-btn">Adicionar Categoria</button>
+        <button id="edit-category-btn">Editar Categoria</button>
+        <button id="delete-category-btn">Excluir Categoria</button>
+      </div>
+    </div>
+
+    <h2>Listagem de Categorias</h2>
+    <div id="category-container"></div>
+  </main>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, push, set, get, update, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2YB3DCEJ0TvoDsbLQw83yzqhSRG7i9GM",
+      authDomain: "foundation-kaleosu-wiki.firebaseapp.com",
+      databaseURL: "https://foundation-kaleosu-wiki-default-rtdb.firebaseio.com",
+      projectId: "foundation-kaleosu-wiki",
+      storageBucket: "foundation-kaleosu-wiki.appspot.com",
+      messagingSenderId: "1026513810215",
+      appId: "1:1026513810215:web:574eb84b7cc14c80c7af02"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const categoryNameInput = document.getElementById("category-name");
+    const masterPasswordInput = document.getElementById("master-password");
+    const addBtn = document.getElementById("add-category-btn");
+    const editBtn = document.getElementById("edit-category-btn");
+    const deleteBtn = document.getElementById("delete-category-btn");
+    const categoryContainer = document.getElementById("category-container");
+
+    function loadCategories() {
+      get(ref(db, 'categories')).then(snapshot => {
+        const data = snapshot.val() || {};
+        categoryContainer.innerHTML = '';
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+        alphabet.forEach(letter => {
+          const container = document.createElement('div');
+          container.className = 'letter-container';
+          container.innerHTML = `<h3>${letter}</h3>`;
+
+          const list = Object.values(data).filter(c => c.name && c.name[0].toUpperCase() === letter);
+          list.sort((a, b) => a.name.localeCompare(b.name));
+
+          list.forEach(cat => {
+            const div = document.createElement('div');
+            div.className = 'category-item';
+            div.innerHTML = `<a href="categoria-detalhes.html?id=${cat.id}">${cat.name}</a>`;
+            container.appendChild(div);
+          });
+
+          categoryContainer.appendChild(container);
+        });
+      });
+    }
+
+    function checkPassword() {
+      return masterPasswordInput.value === "4862";
+    }
+
+    addBtn.addEventListener("click", () => {
+      if (!checkPassword()) return alert("Senha incorreta.");
+      const name = categoryNameInput.value.trim();
+      if (!name) return alert("Digite o nome da categoria.");
+
+      const newRef = push(ref(db, "categories"));
+      set(newRef, { name, id: newRef.key }).then(() => {
+        categoryNameInput.value = "";
+        loadCategories();
+      });
+    });
+
+    editBtn.addEventListener("click", () => {
+      if (!checkPassword()) return alert("Senha incorreta.");
+      const name = categoryNameInput.value.trim();
+      if (!name) return alert("Digite o nome da categoria.");
+
+      get(ref(db, "categories")).then(snapshot => {
+        const data = snapshot.val();
+        for (let id in data) {
+          if (data[id].name.toLowerCase() === name.toLowerCase()) {
+            update(ref(db, "categories/" + id), { name }).then(() => {
+              loadCategories();
+              categoryNameInput.value = "";
+              return;
+            });
+            return;
+          }
+        }
+        alert("Categoria não encontrada.");
+      });
+    });
+
+    deleteBtn.addEventListener("click", () => {
+      if (!checkPassword()) return alert("Senha incorreta.");
+      const name = categoryNameInput.value.trim();
+      if (!name) return alert("Digite o nome da categoria.");
+
+      get(ref(db, "categories")).then(snapshot => {
+        const data = snapshot.val();
+        for (let id in data) {
+          if (data[id].name.toLowerCase() === name.toLowerCase()) {
+            remove(ref(db, "categories/" + id)).then(() => {
+              loadCategories();
+              categoryNameInput.value = "";
+              return;
+            });
+            return;
+          }
+        }
+        alert("Categoria não encontrada.");
+      });
+    });
+
+    loadCategories();
+  </script>
+</body>
+</html>
