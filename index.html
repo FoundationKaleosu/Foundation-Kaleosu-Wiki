@@ -63,18 +63,18 @@
       transform: scale(1.05);
     }
 
-    .counter-card {
+    .counter-card, .welcome-card {
       background-color: #181829;
       border: 2px solid #FFD700;
       border-radius: 10px;
       padding: 10px 20px;
-      margin: 15px auto 0;
-      max-width: 300px;
+      margin: 20px auto 0;
+      max-width: 500px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
     }
 
-    .counter-card p {
-      color: #FFD700;
+    .counter-card p, .welcome-card p {
+      color: #FFF;
       font-size: 1em;
       margin: 0;
     }
@@ -85,28 +85,6 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-    }
-
-    .title-container {
-      margin-top: 40px;
-      margin-bottom: 20px;
-      position: relative;
-      padding-bottom: 1px;
-    }
-
-    .title-container h2 {
-      font-size: 2em;
-      color: #FFD700;
-    }
-
-    .title-container::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 2px;
-      background-color: #FFD700;
-      bottom: 0;
-      left: 0;
     }
 
     .cards-container {
@@ -142,7 +120,7 @@
     }
 
     .card button {
-      background-color: #8b0000;
+      background-color: #730000;
       border: 2px solid #FFD700;
       color: #dfdfe8;
       padding: 10px 20px;
@@ -187,15 +165,17 @@
     </div>
   </header>
 
-  <!-- Card do contador -->
+  <!-- Mensagem de boas-vindas -->
+  <div class="welcome-card">
+    <p>Seja bem-vindo(a) à Wiki da Foundation Kaleosu! Explore o conhecimento oculto e descubra um novo mundo místico.</p>
+  </div>
+
+  <!-- Contador de páginas -->
   <div class="counter-card" id="page-counter">
     <p>Carregando número de páginas...</p>
   </div>
 
   <main>
-    <div class="title-container">
-      <h2>Página Inicial</h2>
-    </div>
     <div class="cards-container" id="recent-pages"></div>
     <div class="bottom-space"></div>
   </main>
@@ -257,7 +237,7 @@
       // Atualiza contador
       const counter = document.getElementById('page-counter');
       const total = pages.length;
-      counter.innerHTML = `<p>${total === 1 ? '1 Publicação' : `${total} Publicações`}</p>`;
+      counter.innerHTML = `<p>${total === 1 ? '1 página disponível' : `${total} páginas disponíveis`}</p>`;
     }
 
     loadRecentPages();
