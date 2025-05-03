@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detalhes da Subcategoria - Foundation Kaleosu Wiki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #000000;
+      color: #dfdfe8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    header {
+      width: 100%;
+      background-color: #181829;
+      padding: 20px 10px;
+      border-bottom: 3px solid #FFD700;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    header h1 {
+      color: #FFD700;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .navbar a {
+      color: #dfdfe8;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #dfdfe8;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 2.2em;
+      border-bottom: 2px solid #FFD700;
+    }
+
+    .category-title-container {
+      margin-bottom: 30px;
+    }
+
+    .page-card {
+      background-color: #181829;
+      border: 2px solid #FFD700;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      transition: 0.3s;
+      color: #dfdfe8;
+    }
+
+    .page-card button {
+      background-color: #8b0000;
+      border: 2px solid #FFD700;
+      color: #dfdfe8;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    .page-card button:hover {
+      background-color: #FFD700;
+      color: #000000;
+    }
+
+    #category-pages-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    @media (max-width: 1200px) {
+      #category-pages-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      #category-pages-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.8em;
+      }
+
+      .page-card {
+        font-size: 0.9em;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Foundation Kaleosu Wiki</h1>
+    <div class="navbar">
+      <a href="index.html">Início</a>
+      <a href="categoria.html">Categorias</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="contato.html">Contato</a>
+      <a href="admin.html">Área Restrita</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="category-title-container">
+      <h2 id="sub-category-title">Carregando Subcategoria...</h2>
+    </div>
+
+    <h2>Páginas Relacionadas</h2>
+    <div id="category-pages-container"></div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2YB3DCEJ0TvoDsbLQw83yzqhSRG7i9GM",
+      authDomain: "foundation-kaleosu-wiki.firebaseapp.com",
+      databaseURL: "https://foundation-kaleosu-wiki-default-rtdb.firebaseio.com",
+      projectId: "foundation-kaleosu-wiki",
+      storageBucket: "foundation-kaleosu-wiki.appspot.com",
+      messagingSenderId: "1026513810215",
+      appId: "1:1026513810215:web:574eb84b7cc14c80c7af02"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const subCategoryTitle = document.getElementById("sub-category-title");
+    const categoryPagesContainer = document.getElementById("category-pages-container");
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const subCategoryId = urlParams.get('id');
+
+    if (!subCategoryId) {
+      subCategoryTitle.innerText = "ID da subcategoria não fornecido.";
+      categoryPagesContainer.innerHTML = "<p>URL inválida. Use um link com ?id=...</p>";
+    } else {
+      function loadSubCategoryDetails() {
+        const categoryRef = ref(db, 'categories');
+        get(categoryRef).then(categoriesSnapshot => {
+          const categories = categoriesSnapshot.val();
+          let found = false;
+
+          for (let categoryKey in categories) {
+            const category = categories[categoryKey];
+            if (category.subcategories) {
+              for (let subKey in category.subcategories) {
+                const sub = category.subcategories[subKey];
+
+                if (sub.id === subCategoryId) {
+                  subCategoryTitle.innerText = sub.name;
+
+                  // Carregar páginas relacionadas
+                  const pagesRef = ref(db, 'pages');
+                  get(pagesRef).then(pagesSnapshot => {
+                    const pages = pagesSnapshot.val();
+                    let filteredPages = [];
+
+                    for (let pageKey in pages) {
+                      const page = pages[pageKey];
+                      if (page.subcategoryId === subCategoryId) {
+                        filteredPages.push({ ...page, id: pageKey });
+                      }
+                    }
+
+                    if (filteredPages.length > 0) {
+                      filteredPages.sort((a, b) => a.title.localeCompare(b.title));
+                      categoryPagesContainer.innerHTML = '';
+
+                      filteredPages.forEach(page => {
+                        const card = document.createElement('div');
+                        card.className = 'page-card';
+                        card.innerHTML = `
+                          <h3>${page.title}</h3>
+                          <button onclick="window.location.href='viewpage.html?id=${page.id}'">Ver Página</button>
+                        `;
+                        categoryPagesContainer.appendChild(card);
+                      });
+                    } else {
+                      categoryPagesContainer.innerHTML = "<p>Não há páginas relacionadas a esta subcategoria.</p>";
+                    }
+                  });
+
+                  found = true;
+                  break;
+                }
+              }
+            }
+            if (found) break;
+          }
+
+          if (!found) {
+            subCategoryTitle.innerText = "Subcategoria não encontrada.";
+            categoryPagesContainer.innerHTML = "<p>Não foi possível encontrar informações sobre esta subcategoria.</p>";
+          }
+        }).catch(error => {
+          console.error("Erro ao carregar subcategoria:", error);
+          subCategoryTitle.innerText = "Erro ao carregar.";
+          categoryPagesContainer.innerHTML = "<p>Erro ao carregar as páginas relacionadas.</p>";
+        });
+      }
+
+      loadSubCategoryDetails();
+    }
+  </script>
+</body>
+</html>
