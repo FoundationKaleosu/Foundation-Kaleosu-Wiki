@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -20,12 +19,10 @@
       color: #dfdfe8;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
       min-height: 100vh;
       text-align: center;
       overflow-x: hidden;
-      padding: 0;
     }
 
     header {
@@ -66,11 +63,26 @@
       transform: scale(1.05);
     }
 
+    .counter-card {
+      background-color: #181829;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 10px 20px;
+      margin: 15px auto 0;
+      max-width: 300px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    }
+
+    .counter-card p {
+      color: #FFD700;
+      font-size: 1em;
+      margin: 0;
+    }
+
     main {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
       width: 100%;
     }
@@ -125,12 +137,12 @@
 
     .card h3 {
       font-size: 1.4em;
-  margin-bottom: 110px;
-  color: #fff;
+      margin-bottom: 110px;
+      color: #fff;
     }
 
     .card button {
-   background-color: #8b0000;
+      background-color: #8b0000;
       border: 2px solid #FFD700;
       color: #dfdfe8;
       padding: 10px 20px;
@@ -175,6 +187,11 @@
     </div>
   </header>
 
+  <!-- Card do contador -->
+  <div class="counter-card" id="page-counter">
+    <p>Carregando número de páginas...</p>
+  </div>
+
   <main>
     <div class="title-container">
       <h2>Página Inicial</h2>
@@ -200,8 +217,6 @@
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
 
-    let allPages = [];
-
     function loadRecentPages() {
       const pagesRef = ref(database, 'pages');
 
@@ -220,10 +235,7 @@
           }
         });
 
-        // Ordenar em ordem alfabética
         pages.sort((a, b) => a.title.localeCompare(b.title));
-
-        allPages = pages;
         displayPages(pages);
       });
     }
@@ -231,6 +243,7 @@
     function displayPages(pages) {
       const container = document.getElementById('recent-pages');
       container.innerHTML = '';
+
       pages.forEach(page => {
         const div = document.createElement('div');
         div.className = 'card';
@@ -240,6 +253,11 @@
         `;
         container.appendChild(div);
       });
+
+      // Atualiza contador
+      const counter = document.getElementById('page-counter');
+      const total = pages.length;
+      counter.innerHTML = `<p>${total === 1 ? '1 Publicação' : `${total} Publicações`}</p>`;
     }
 
     loadRecentPages();
