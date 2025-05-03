@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Foundation Kaleosu Wiki - Explore um mundo místico de RPG e ocultismo esotérico." />
+  <title>Foundation Kaleosu Wiki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #000000;
+      color: #dfdfe8;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      overflow-x: hidden;
+      padding: 0;
+    }
+
+    header {
+      width: 100%;
+      padding: 10px;
+      background-color: #181829;
+      border-bottom: 3px solid #FFD700;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #FFD700;
+      margin-bottom: 10px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .navbar a {
+      color: #dfdfe8;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: #8b0000;
+      color: #000000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+      transform: scale(1.05);
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+    }
+
+    .title-container {
+      margin-top: 40px;
+      margin-bottom: 20px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .title-container h2 {
+      font-size: 2em;
+      color: #FFD700;
+    }
+
+    .title-container::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: #FFD700;
+      bottom: 0;
+      left: 0;
+    }
+
+    .cards-container {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      padding: 0 10px;
+    }
+
+    .card {
+      background-color: #181829;
+      border-radius: 15px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+      border: 2px solid #FFD700;
+      width: 100%;
+      max-width: 350px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card h3 {
+      font-size: 1.4em;
+  margin-bottom: 10px;
+  color: #fff;
+    }
+
+    .card button {
+   background-color: #8b0000;
+      border: 2px solid #FFD700;
+      color: #dfdfe8;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    .card button:hover {
+      background-color: #8b000;
+      color: #000000;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .cards-container {
+        justify-content: space-evenly;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cards-container {
+        justify-content: center;
+      }
+    }
+
+    .bottom-space {
+      height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Foundation Kaleosu Wiki</h1>
+    <div class="navbar">
+      <a href="index.html">Início</a>
+      <a href="categoria.html">Categorias</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="contato.html">Contato</a>
+      <a href="admin.html">Área Restrita</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="title-container">
+      <h2>Página Inicial</h2>
+    </div>
+    <div class="cards-container" id="recent-pages"></div>
+    <div class="bottom-space"></div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2YB3DCEJ0TvoDsbLQw83yzqhSRG7i9GM",
+      authDomain: "foundation-kaleosu-wiki.firebaseapp.com",
+      databaseURL: "https://foundation-kaleosu-wiki-default-rtdb.firebaseio.com",
+      projectId: "foundation-kaleosu-wiki",
+      storageBucket: "foundation-kaleosu-wiki.appspot.com",
+      messagingSenderId: "1026513810215",
+      appId: "1:1026513810215:web:574eb84b7cc14c80c7af02"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    let allPages = [];
+
+    function loadRecentPages() {
+      const pagesRef = ref(database, 'pages');
+
+      onValue(pagesRef, (snapshot) => {
+        const pages = [];
+
+        snapshot.forEach(child => {
+          const data = child.val();
+          if (data && data.title) {
+            pages.push({
+              title: data.title,
+              key: child.key,
+              keywords: data.keywords || [],
+              createdAt: data.createdAt || 0
+            });
+          }
+        });
+
+        // Ordenar em ordem alfabética
+        pages.sort((a, b) => a.title.localeCompare(b.title));
+
+        allPages = pages;
+        displayPages(pages);
+      });
+    }
+
+    function displayPages(pages) {
+      const container = document.getElementById('recent-pages');
+      container.innerHTML = '';
+      pages.forEach(page => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <h2>${page.title}</h2>
+          <button onclick="window.location.href='viewpage.html?id=${page.key}'">Ver Página</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    loadRecentPages();
+  </script>
+</body>
+</html>
