@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Área Administrativa - Foundation Kaleosu Wiki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #000000;
+      color: #dfdfe8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    header {
+      width: 100%;
+      background-color: #181829;
+      padding: 20px 10px;
+      border-bottom: 3px solid #FFD700;
+      text-align: center;
+    }
+
+    header h1 {
+      color: #FFD700;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .navbar a {
+      color: #dfdfe8;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+
+    main {
+      width: 100%;
+      max-width: 600px;
+      padding: 40px 20px;
+    }
+
+    .admin-card {
+      background-color: #232333;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #FFD700;
+      margin-bottom: 20px;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      font-size: 1em;
+      border: 1px solid #FFD700;
+      border-radius: 5px;
+      background-color: #181829;
+      color: #fff;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .button-group button {
+      padding: 12px;
+      font-size: 1em;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      color: #dfdfe8;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .button-group button:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Foundation Kaleosu Wiki</h1>
+    <div class="navbar">
+      <a href="index.html">Início</a>
+      <a href="categoria.html">Categorias</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="contato.html">Contato</a>
+      <a href="admin.html">Área Restrita</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="admin-card">
+      <h2>Área Administrativa</h2>
+      <input type="password" id="adminPassword" placeholder="Digite a senha mestra" />
+      <div class="button-group">
+        <button onclick="navigateTo('newpage.html')">Adicionar Página</button>
+        <button onclick="navigateTo('editpage.html')">Editar Página</button>
+        <button onclick="navigateTo('deletepage.html')">Deletar Página</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const MASTER_PASSWORD = "4862"; // Substitua pela sua senha real
+
+    function navigateTo(page) {
+      const input = document.getElementById("adminPassword").value;
+      if (input === MASTER_PASSWORD) {
+        window.location.href = page;
+      } else {
+        alert("Senha incorreta!");
+      }
+    }
+  </script>
+</body>
+</html>
