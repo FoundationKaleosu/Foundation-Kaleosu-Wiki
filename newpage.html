@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Página</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #000000;
+      color: #dfdfe8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    header {
+      width: 100%;
+      background-color: #181829;
+      padding: 20px 10px;
+      border-bottom: 3px solid #FFD700;
+      text-align: center;
+    }
+    header h1 {
+      color: #FFD700;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .navbar a {
+      color: #dfdfe8;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+    .navbar a:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+    main {
+      width: 100%;
+      max-width: 1000px;
+      padding: 40px 20px;
+    }
+    .form-card {
+      background-color: #232333;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 30px;
+    }
+    h2 {
+      color: #FFD700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1em;
+      border: 1px solid #FFD700;
+      border-radius: 5px;
+      background-color: #181829;
+      color: #fff;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 5px;
+      margin-bottom: 15px;
+    }
+    .toolbar button {
+      padding: 8px 12px;
+      font-size: 0.9em;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      color: #dfdfe8;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .toolbar button:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+    button {
+      padding: 12px;
+      font-size: 1em;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      color: #dfdfe8;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+    .editor {
+      min-height: 200px;
+      border: 1px solid #FFD700;
+      padding: 10px;
+      background-color: #181829;
+      color: #fff;
+      margin-bottom: 15px;
+      resize: vertical;
+      list-style-position: inside;
+    }
+    .file-input {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Foundation Kaleosu Wiki</h1>
+    <div class="navbar">
+      <a href="index.html">Início</a>
+      <a href="categoria.html">Categorias</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="contato.html">Contato</a>
+      <a href="admin.html">Área Restrita</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="form-card">
+      <h2>Criar Nova Página</h2>
+      <input type="text" id="title" placeholder="Título da Página" required />
+      <select id="categoryId" required>
+        <option value="" disabled selected>Selecione a Categoria</option>
+      </select>
+      <select id="subcategoryId">
+        <option value="" disabled selected>Selecione a Subcategoria</option>
+      </select>
+
+      <div class="toolbar">
+        <button type="button" onclick="formatText('h2')">H2</button>
+        <button type="button" onclick="formatText('h3')">H3</button>
+        <button type="button" onclick="formatText('h4')">H4</button>
+        <button type="button" onclick="document.execCommand('bold')">N</button>
+        <button type="button" onclick="document.execCommand('italic')">I</button>
+        <button type="button" onclick="document.execCommand('underline')">S</button>
+        <button type="button" onclick="document.execCommand('insertUnorderedList')">●</button>
+        <button type="button" onclick="document.execCommand('insertOrderedList')">✦</button>
+        <button type="button" onclick="document.execCommand('justifyLeft')">E</button>
+        <button type="button" onclick="document.execCommand('justifyCenter')">C</button>
+        <button type="button" onclick="document.execCommand('justifyRight')">D</button>
+        <button type="button" onclick="insertTable()">T</button>
+        <button type="button" onclick="changeTextColor()">COR</button>
+        <button type="button" onclick="openImageDialog()">IMAGEM</button>
+      </div>
+
+      <div contenteditable="true" class="editor" id="content" required></div>
+
+      <input type="text" id="author" placeholder="Nome do Autor" required />
+      
+      <!-- Campo de Data de Criação -->
+      <input type="text" id="creationDate" placeholder="Data de Criação" required readonly />
+
+      <button onclick="savePage()">Salvar Página</button>
+    </div>
+  </main>
+
+  <input type="file" id="imageInput" class="file-input" style="display:none" accept="image/*" onchange="uploadImage(event)"/>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2YB3DCEJ0TvoDsbLQw83yzqhSRG7i9GM",
+      authDomain: "foundation-kaleosu-wiki.firebaseapp.com",
+      databaseURL: "https://foundation-kaleosu-wiki-default-rtdb.firebaseio.com",
+      projectId: "foundation-kaleosu-wiki",
+      storageBucket: "foundation-kaleosu-wiki.appspot.com",
+      messagingSenderId: "1026513810215",
+      appId: "1:1026513810215:web:574eb84b7cc14c80c7af02"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Categorias
+    function loadCategories() {
+      const categoriesRef = ref(db, 'categories');
+      get(categoriesRef).then(snapshot => {
+        const categories = snapshot.val();
+        const categorySelect = document.getElementById("categoryId");
+        if (categories) {
+          for (const categoryId in categories) {
+            const category = categories[categoryId];
+            const option = document.createElement("option");
+            option.value = categoryId;
+            option.innerText = category.name;
+            categorySelect.appendChild(option);
+          }
+        }
+      });
+    }
+
+    window.loadSubcategories = function () {
+      const categoryId = document.getElementById("categoryId").value;
+      const subcategorySelect = document.getElementById("subcategoryId");
+      subcategorySelect.innerHTML = '<option value="" disabled selected>Selecione a Subcategoria</option>';
+
+      if (categoryId) {
+        const subcategoriesRef = ref(db, 'categories/' + categoryId + '/subcategories');
+        get(subcategoriesRef).then(snapshot => {
+          const subcategories = snapshot.val();
+          if (subcategories) {
+            for (const subcategoryId in subcategories) {
+              const subcategory = subcategories[subcategoryId];
+              const option = document.createElement("option");
+              option.value = subcategoryId;
+              option.innerText = subcategory.name;
+              subcategorySelect.appendChild(option);
+            }
+          }
+        });
+      }
+    }
+
+    window.savePage = function () {
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").innerHTML;
+      const author = document.getElementById("author").value;
+      const categoryId = document.getElementById("categoryId").value;
+      const subcategoryId = document.getElementById("subcategoryId").value;
+      const creationDate = document.getElementById("creationDate").value;
+
+      const newPageRef = push(ref(db, 'pages'));
+      set(newPageRef, {
+        title, content, author, categoryId, subcategoryId, creationDate
+      }).then(() => {
+        alert('Página salva com sucesso!');
+        window.location.href = 'newpage.html';
+      }).catch((error) => {
+        alert('Erro ao salvar a página: ' + error.message);
+      });
+    }
+
+    window.formatText = function (tag) {
+      document.execCommand('formatBlock', false, tag);
+    }
+
+    window.openImageDialog = function () {
+      document.getElementById("imageInput").click();
+    }
+
+    window.uploadImage = function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.maxWidth = '100%';
+          document.getElementById("content").appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    window.insertTable = function () {
+      const table = document.createElement('table');
+      const row = table.insertRow();
+      for (let i = 0; i < 3; i++) {
+        const cell = row.insertCell();
+        cell.innerHTML = '<input type="text" placeholder="Digite algo..." />';
+      }
+      document.getElementById("content").appendChild(table);
+    }
+
+    window.changeTextColor = function () {
+      const color = prompt("Digite a cor desejada (exemplo: red, #ff0000)");
+      if (color) {
+        document.execCommand("foreColor", false, color);
+      }
+    }
+
+    // Preencher a data de criação ao carregar a página
+    window.onload = function() {
+      const date = new Date();
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      
+      const creationDate = document.getElementById("creationDate");
+      creationDate.value = `${day}/${month}/${year}`;
+    };
+
+    loadCategories();
+    document.getElementById("categoryId").addEventListener("change", loadSubcategories);
+  </script>
+</body>
+</html>
