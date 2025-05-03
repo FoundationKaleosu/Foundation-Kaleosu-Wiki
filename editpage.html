@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editar Página</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #000000;
+      color: #dfdfe8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    header {
+      width: 100%;
+      background-color: #181829;
+      padding: 20px 10px;
+      border-bottom: 3px solid #FFD700;
+      text-align: center;
+    }
+    header h1 {
+      color: #FFD700;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .navbar a {
+      color: #dfdfe8;
+      text-decoration: none;
+      padding: 10px 15px;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+    .navbar a:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+    main {
+      width: 100%;
+      max-width: 1000px;
+      padding: 40px 20px;
+    }
+    .form-card {
+      background-color: #232333;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      padding: 30px;
+    }
+    h2 {
+      color: #FFD700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1em;
+      border: 1px solid #FFD700;
+      border-radius: 5px;
+      background-color: #181829;
+      color: #fff;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 5px;
+      margin-bottom: 15px;
+    }
+    .toolbar button, button {
+      padding: 8px 12px;
+      font-size: 0.9em;
+      background-color: #730000;
+      border: 2px solid #FFD700;
+      color: #dfdfe8;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .toolbar button:hover, button:hover {
+      background-color: #8b0000;
+      color: #000000;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1em;
+    }
+    .editor {
+      min-height: 200px;
+      border: 1px solid #FFD700;
+      padding: 10px;
+      background-color: #181829;
+      color: #fff;
+      margin-bottom: 15px;
+      resize: vertical;
+    }
+    .file-input {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Foundation Kaleosu Wiki</h1>
+    <div class="navbar">
+      <a href="index.html">Início</a>
+      <a href="categoria.html">Categorias</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="contato.html">Contato</a>
+      <a href="admin.html">Área Restrita</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="form-card">
+      <h2>Editar Página</h2>
+      <select id="pageSelector" required>
+        <option value="" disabled selected>Selecione a Página</option>
+      </select>
+
+      <select id="categoryId" required>
+        <option value="" disabled selected>Selecione a Categoria</option>
+      </select>
+      <select id="subcategoryId">
+        <option value="" disabled selected>Selecione a Subcategoria</option>
+      </select>
+
+      <div class="toolbar">
+        <button type="button" onclick="formatText('h2')">H2</button>
+        <button type="button" onclick="formatText('h3')">H3</button>
+        <button type="button" onclick="formatText('h4')">H4</button>
+        <button type="button" onclick="document.execCommand('bold')">N</button>
+        <button type="button" onclick="document.execCommand('italic')">I</button>
+        <button type="button" onclick="document.execCommand('underline')">S</button>
+        <button type="button" onclick="document.execCommand('insertUnorderedList')">●</button>
+        <button type="button" onclick="document.execCommand('insertOrderedList')">✦</button>
+        <button type="button" onclick="document.execCommand('justifyLeft')">E</button>
+        <button type="button" onclick="document.execCommand('justifyCenter')">C</button>
+        <button type="button" onclick="document.execCommand('justifyRight')">D</button>
+        <button type="button" onclick="insertTable()">T</button>
+        <button type="button" onclick="changeTextColor()">COR</button>
+        <button type="button" onclick="openImageDialog()">IMAGEM</button>
+      </div>
+
+      <div contenteditable="true" class="editor" id="content"></div>
+      <input type="text" id="author" placeholder="Nome do Autor" required />
+      <input type="text" id="creationDate" placeholder="Data de Criação" readonly required />
+
+      <button id="saveBtn" onclick="savePage()">Salvar Alterações</button>
+    </div>
+  </main>
+
+  <input type="file" id="imageInput" class="file-input" style="display:none" accept="image/*" onchange="uploadImage(event)"/>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2YB3DCEJ0TvoDsbLQw83yzqhSRG7i9GM",
+      authDomain: "foundation-kaleosu-wiki.firebaseapp.com",
+      databaseURL: "https://foundation-kaleosu-wiki-default-rtdb.firebaseio.com",
+      projectId: "foundation-kaleosu-wiki",
+      storageBucket: "foundation-kaleosu-wiki.appspot.com",
+      messagingSenderId: "1026513810215",
+      appId: "1:1026513810215:web:574eb84b7cc14c80c7af02"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    function loadCategories() {
+      const categoriesRef = ref(db, 'categories');
+      get(categoriesRef).then(snapshot => {
+        const categories = snapshot.val();
+        const categorySelect = document.getElementById("categoryId");
+        if (categories) {
+          for (const id in categories) {
+            const option = document.createElement("option");
+            option.value = id;
+            option.innerText = categories[id].name;
+            categorySelect.appendChild(option);
+          }
+        }
+      });
+    }
+
+    function loadSubcategories() {
+      const categoryId = document.getElementById("categoryId").value;
+      const subcategorySelect = document.getElementById("subcategoryId");
+      subcategorySelect.innerHTML = '<option value="" disabled selected>Selecione a Subcategoria</option>';
+
+      return get(ref(db, 'categories/' + categoryId + '/subcategories')).then(snapshot => {
+        const subcategories = snapshot.val();
+        if (subcategories) {
+          for (const id in subcategories) {
+            const option = document.createElement("option");
+            option.value = id;
+            option.innerText = subcategories[id].name;
+            subcategorySelect.appendChild(option);
+          }
+        }
+      });
+    }
+
+    function loadPages() {
+      const pagesRef = ref(db, 'pages');
+      get(pagesRef).then(snapshot => {
+        const pages = snapshot.val();
+        const pageSelector = document.getElementById("pageSelector");
+        if (pages) {
+          for (const id in pages) {
+            const option = document.createElement("option");
+            option.value = id;
+            option.textContent = pages[id].title;
+            pageSelector.appendChild(option);
+          }
+        }
+      });
+    }
+
+    document.getElementById("pageSelector").addEventListener("change", function () {
+      const pageId = this.value;
+      get(ref(db, 'pages/' + pageId)).then(snapshot => {
+        const page = snapshot.val();
+        if (page) {
+          document.getElementById("content").innerHTML = page.content || "";
+          document.getElementById("author").value = page.author || "";
+          document.getElementById("creationDate").value = page.creationDate || "";
+          document.getElementById("categoryId").value = page.categoryId || "";
+          loadSubcategories().then(() => {
+            document.getElementById("subcategoryId").value = page.subcategoryId || "";
+          });
+          document.getElementById("saveBtn").dataset.pageId = pageId;
+        }
+      });
+    });
+
+    window.savePage = function () {
+      const pageId = document.getElementById("saveBtn").dataset.pageId;
+      if (!pageId) return alert("Selecione uma página para editar.");
+
+      const title = document.getElementById("pageSelector").selectedOptions[0].text;
+      const content = document.getElementById("content").innerHTML;
+      const author = document.getElementById("author").value;
+      const categoryId = document.getElementById("categoryId").value;
+      const subcategoryId = document.getElementById("subcategoryId").value;
+      const creationDate = document.getElementById("creationDate").value;
+
+      set(ref(db, 'pages/' + pageId), {
+        title, content, author, categoryId, subcategoryId, creationDate
+      }).then(() => {
+        alert('Página atualizada com sucesso!');
+        window.location.reload();
+      }).catch(error => {
+        alert('Erro ao atualizar: ' + error.message);
+      });
+    }
+
+    window.formatText = function (tag) {
+      document.execCommand('formatBlock', false, tag);
+    }
+    window.openImageDialog = function () {
+      document.getElementById("imageInput").click();
+    }
+    window.uploadImage = function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.maxWidth = '100%';
+          document.getElementById("content").appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    window.insertTable = function () {
+      const table = document.createElement('table');
+      const row = table.insertRow();
+      for (let i = 0; i < 3; i++) {
+        const cell = row.insertCell();
+        cell.innerHTML = '<input type="text" placeholder="Digite algo..." />';
+      }
+      document.getElementById("content").appendChild(table);
+    }
+    window.changeTextColor = function () {
+      const color = prompt("Digite a cor desejada (exemplo: red, #ff0000)");
+      if (color) document.execCommand("foreColor", false, color);
+    }
+
+    window.onload = function () {
+      const date = new Date();
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      document.getElementById("creationDate").value = `${day}/${month}/${year}`;
+      loadCategories();
+      loadPages();
+    }
+    document.getElementById("categoryId").addEventListener("change", loadSubcategories);
+  </script>
+</body>
+</html>
